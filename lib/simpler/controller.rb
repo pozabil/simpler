@@ -9,6 +9,7 @@ module Simpler
       @name = extract_name
       @request = Rack::Request.new(env)
       @response = Rack::Response.new
+      @headers = {}
     end
 
     def make_response(action)
@@ -17,6 +18,7 @@ module Simpler
 
       set_default_headers
       send(action)
+      set_custom_headers
       write_response
 
       @response.finish
@@ -24,12 +26,18 @@ module Simpler
 
     private
 
+    attr_reader :headers
+
     def extract_name
       self.class.name.match('(?<name>.+)Controller')[:name].downcase
     end
 
     def set_default_headers
       @response['Content-Type'] = 'text/html'
+    end
+
+    def set_custom_headers
+      @headers.each { |k, v| @response[k] = v}
     end
 
     def write_response
