@@ -31,8 +31,9 @@ module Simpler
       return not_found_error if route.nil?
       controller = route.controller.new(env)
       action = route.action
+      param = route.param
 
-      make_response(controller, action)
+      make_response(controller, action, param)
     end
 
     private
@@ -58,8 +59,8 @@ module Simpler
       Rack::Response.new(body, status, headers).finish
     end
 
-    def make_response(controller, action)
-      controller.make_response(action)
+    def make_response(controller, action, param)
+      controller.make_response(action, param)
     end
 
   end
