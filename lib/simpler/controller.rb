@@ -15,7 +15,7 @@ module Simpler
     def make_response(action, param)
       @request.env['simpler.controller'] = self
       @request.env['simpler.action'] = action
-      
+
       set_custom_param(param)
       set_default_headers
       send(action)
@@ -63,6 +63,7 @@ module Simpler
     end
 
     def render(template)
+      headers['Content-Type'] = "text/#{template.first[0]}" if template.is_a?(Hash)
       @request.env['simpler.template'] = template
     end
 
