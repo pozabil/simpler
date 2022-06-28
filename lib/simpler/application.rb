@@ -28,10 +28,12 @@ module Simpler
 
     def call(env)
       route = @router.route_for(env)
+      return not_found_error if route.nil?
       controller = route.controller.new(env)
       action = route.action
+      param = route.param
 
-      make_response(controller, action)
+      make_response(controller, action, param)
     end
 
     private
@@ -50,8 +52,15 @@ module Simpler
       @db = Sequel.connect(database_config)
     end
 
-    def make_response(controller, action)
-      controller.make_response(action)
+    def not_found_error
+      body = ['404 Not Found']
+      status = 404
+      headers = {'Content-Type' => 'text/plain'}
+      Rack::Response.new(body, status, headers).finish
+    end
+
+    def make_response(controller, action, param)
+      controller.make_response(action, param)
     end
 
   end

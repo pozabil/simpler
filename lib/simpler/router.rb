@@ -25,10 +25,15 @@ module Simpler
     private
 
     def add_route(method, path, route_point)
+      compound_path = path.split('/:')
+      path = compound_path[0]
+      param = compound_path[1]
+
       route_point = route_point.split('#')
       controller = controller_from_string(route_point[0])
       action = route_point[1]
-      route = Route.new(method, path, controller, action)
+
+      route = Route.new(method, path, controller, action, param)
 
       @routes.push(route)
     end
